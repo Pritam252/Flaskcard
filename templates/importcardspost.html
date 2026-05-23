@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Import Cards TSV File to end of {{ deck_title }}
+{% endblock %}
+
+{% block main %}
+    <h1>Import Cards TSV File to end of {{ deck_title }}</h1>
+    <hr/>
+    <br/>
+    <form action="/importcardspost/{{ deck_id }}" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="deckFile" class="form-label fs-4">Choose a deck file (.tsv, .txt)</label>
+            <input class="form-control" type="file" id="deckFile" name="file_upload" accpet=".tsv, .txt"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Import Cards</button>
+    </form>
+{% endblock %}

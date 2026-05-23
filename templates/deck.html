@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Card {{ card_number }} of deck: {{ deck_title }}
+{% endblock %}
+
+{% block main %}
+    <div class="container py-5 text-center">
+        <div class="mb-4">
+            <form action="/renamedeck" method="POST" class="d-inline-block">
+                <input type="hidden" name="deck_id" value="{{ deck_id }}"/>
+                <input type="text" name="title" value="{{ deck_title }}" 
+                    class="h1 border-0 border-bottom text-center bg-transparent outline-none w-auto"
+                    style="display: inline-block; min-width: 200px;"
+                    onfocus="this.select()">
+            </form>
+            <p class="text-muted">Number of cards: {{ deck_size }}</p>
+            <a class="btn" href="/">Return to homepage</a>
+            <a class="btn btn-success" href="/addcardpost/{{ deck_id }}">Add a card to the end</a>
+            <a class="btn btn-info" href="/importcardspost/{{ deck_id }}">Import card(s) to the end</a>
+        </div>
+        <hr/>
+        <form action="/processcards" method="POST">
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Card number</th>
+                        <th>Front text</th>
+                        <th>Back text</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="card-table-body">
+                    <tr class="border-bottom border-top">
+                        <td>
+                            <input class="form-check-input cursor-pointer" id="all-checkbox"
+                                            type="checkbox" value=""
+                                            style="transform: scale(1.5);"/>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <button type="submit" name="action" value="delete" class="btn btn-danger">
+                                Delete Selected
+                            </button>
+                        </td>
+                    </tr>
+                    {% for card in cards %}
+                    <tr onclick="window.location.href='/viewcard/{{card[0]}}'" class="cursor-pointer deck-row">
+                        <td onclick="event.stopPropagation();">
+                            <input class="form-check-input card-checkbox cursor-pointer" 
+                                name="card_ids"
+                                type="checkbox" value="{{card[0]}}"
+                                style="transform: scale(1.5);"/>
+                        </td>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ card[1] }}</td>
+                        <td>{{ card[2] }}</td>
+                        <td>
+                            <a class="btn btn-primary">View</a>&nbsp;
+                            <a class="btn btn-secondary" href="/editcard/{{card[0]}}">Edit</a>&nbsp;
+                            <a class="btn btn-danger" href="/deletecard/{{card[0]}}">Delete</a>&nbsp;
+                            <a class="btn btn-success" href="/addcard/{{card[0]}}">Add card</a>
+                            <a class="btn btn-info" href="/importcards/{{card[0]}}">Import card(s)</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <script>
+        function getSelectedCardIds() {
+            const checkboxes = document.querySelectorAll(".card-checkbox:checked");
+            const ids = Array.from(checkboxes).map(cb => cb.value);
+            return ids;
+        }
+
+        function highlightSelectedRows() {
+            const rows = document.querySelectorAll(".deck-row")
+            rows.forEach(row => {
+                const checkbox = row.querySelector(".card-checkbox")
+                if (checkbox.checked) {
+                    row.classList.add("table-primary");
+                } else {
+                    row.classList.remove("table-primary");
+                }
+            });
+        }
+        
+        const allCheckbox = document.getElementById("all-checkbox");
+        const cardCheckboxes = document.querySelectorAll(".card-checkbox");
+
+        const tableBody = document.getElementById("card-table-body")
+        tableBody.addEventListener("change", (event) => {
+            if (event.target.classList.contains("card-checkbox")) {
+                highlightSelectedRows();
+
+                const checkedCount = document.querySelectorAll(".card-checkbox:checked").length;
+                const totalCount = cardCheckboxes.length;
+                allCheckbox.checked = checkedCount == totalCount;
+                allCheckbox.indeterminate = checkedCount > 0 && checkedCount < totalCount;
+            }
+        });
+
+        allCheckbox.addEventListener("change", function() {
+            cardCheckboxes.forEach(cb => {
+                cb.checked = this.checked;
+            });
+            highlightSelectedRows();
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Card {{ card_number }} of deck: {{ deck_title }}
+{% endblock %}
+
+{% block main %}
+    <style>
+        /* Cr. Gemini for the 3D flashcard styling */
+        .flashcard-scene {
+            width: 100%;
+            max-width: 450px;
+            height: 300px;
+            perspective: 1000px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d; /* Keeps children in 3D space */
+            cursor: pointer;
+        }
+
+        .flashcard.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .card-back {
+            background-color: #f8f9fa;
+            transform: rotateY(180deg);
+        }
+
+        .card-front {
+            background-color: white;
+        }
+
+        .card-label {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05rem;
+            font-family: Arial;
+            font-weight: bold;
+            color: #adb5bd;
+            user-select: none;
+        }
+
+        .card-front .card-label {
+            color: #6c757d;
+        }
+
+        .card-back .card-label {
+            color: #38792b;
+        }
+    </style>
+    <a class="btn btn-info text-decoration-none" href="/viewdeck/{{ deck_id }}">Return to deck</a>
+    <div class="container py-5 text-center">
+        <div class="mb-4">
+            <h4>Deck: {{ deck_title }}</h4>
+            <p class="text-muted">Card {{ card_number }} / {{ deck_size }}</p>
+        </div>
+
+        <div class="flashcard-scene">
+            <div class="flashcard" id="card" onclick="flipCard()">
+                <div class="card-face card-front d-flex align-items-center justify-content-center shadow-sm">
+                    <span class="card-label">Front</span>
+                    <div class="card-body">
+                        <h2 class="card-text">{{ card[0] }}</h2>
+                    </div>
+                </div>
+                <div class="card-face card-back d-flex align-items-center justify-content-center shadow-sm">
+                    <span class="card-label">Back</span>
+                    <div class="card-body">
+                        <h2 class="card-text">{{ card[1] }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5">
+            <a href="/viewcard/{{ prev_card_id }}" class="btn btn-outline-secondary {% if isnt_prev_able %}disabled{% endif %}">Previous</a>
+            <button class="btn btn-primary mx-3" onclick="flipCard()">Flip Card</button>
+            <a href="/viewcard/{{ next_card_id }}" class="btn btn-outline-secondary {% if isnt_next_able %}disabled{% endif %}">Next</a>
+        </div>
+    </div>
+
+    <script>
+        function flipCard() {
+            document.getElementById('card').classList.toggle('is-flipped');
+        }
+    </script>
+{% endblock %}
