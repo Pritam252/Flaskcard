@@ -4,7 +4,7 @@ A simple flashcard app written using Python and Flask (and also Bootstrap for st
 
 It is my CS50x final project.
 
-
+## Video Demo: https://youtu.be/QVzpHp-RGL4
 
 
 ## How to run in debug:
@@ -52,7 +52,7 @@ You can directly run `pip` and `flask` directly if you have it set up directly.
 
 - Flask-Session
 
-- Sqlite3
+- SQLite3
 
 - Client-side HTML, CSS, and JavaScript
 
@@ -117,7 +117,7 @@ We just have to add a card every `(b.position - a.position) / n` starting after 
 
 
 
-The schema of the database is in `data.db`, or you can use the `.schema` command to view it as well.
+The schema of the database is in `create.sql`, or you can use the `.schema` command to view it as well.
 
 
 
