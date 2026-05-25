@@ -12,8 +12,8 @@ import os
 app = Flask("Flaskcard")
 
 default_deck_title = "New Deck"
-default_front_text = "Front Text"
-default_back_text = "Back Text"
+default_front_text = ""
+default_back_text = ""
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
